@@ -5,6 +5,8 @@ import jakarta.persistence.Id;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Getter
 @Setter
@@ -16,4 +18,5 @@ public class UserTransaction {
     private String username;
     private String transaction;
     private double balance;
+    private LocalDateTime transactionDate;
 }

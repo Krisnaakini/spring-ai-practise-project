@@ -20,4 +20,9 @@ public class AiController {
     public String askTransaction(@RequestParam String username, @RequestParam String question){
         return aiService.askAboutTransaction(question, username);
     }
+
+    @GetMapping("ai/recent-transactions")
+    public String askRecentTransactions(@RequestParam String username, @RequestParam String question){
+        return aiService.askRecentTransactions(username, question);
+    }
 }
