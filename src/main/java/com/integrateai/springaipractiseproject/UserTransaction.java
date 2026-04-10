@@ -19,4 +19,7 @@ public class UserTransaction {
     private String transaction;
     private double balance;
     private LocalDateTime transactionDate;
+
+    private String category;    // FOOD, SHOPPING, TRAVEL
+    private double amount;
 }

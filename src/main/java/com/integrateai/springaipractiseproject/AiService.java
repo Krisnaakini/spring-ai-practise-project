@@ -3,8 +3,11 @@ package com.integrateai.springaipractiseproject;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Service
 public class AiService {
@@ -74,5 +77,23 @@ public class AiService {
                 .call()
                 .content();
 
+    }
+
+    public Map<String, Double> getSpendingSummary(String username){
+        List<UserTransaction> userTransactions = userTransactionRepository.findByUsername(username);
+        return userTransactions.stream()
+                .collect(Collectors.groupingBy(
+                        UserTransaction::getCategory,
+                        Collectors.summingDouble(UserTransaction::getAmount)
+                ));
+    }
+
+    public String askSpendSummary(String username, String question) {
+        Map<String, Double> summary = getSpendingSummary(username);
+        String highestCategory = Collections.max(summary.entrySet(), Map.Entry.comparingByValue()).getKey();
+        String context = "User spending summary: " + summary + ". Explain where the user spends most money in a friendly way."
+                + question + "Highest spending category is " + highestCategory;
+
+        return generateAiResponse(context);
     }
 }
