@@ -25,7 +25,7 @@ public class AiService {
     }
 
     public String askAboutTransaction(String userPrompt, String username){
-        UserTransaction userTransaction = userTransactionRepository.findByUsername(username);
+        UserTransaction userTransaction = userTransactionRepository.findTopByUsernameOrderByTransactionDateDesc(username);
         if (Objects.isNull(userTransaction)){
             return "No account found for username: " + username;
         }
@@ -40,19 +40,12 @@ public class AiService {
     }
 
     public String askRecentTransactions(String username, String question) {
-        // Step 1: Get latest transaction (balance)
-        UserTransaction userTransaction = userTransactionRepository.findTopByUsernameOrderByTransactionDateDesc(username);
-        if (Objects.isNull(userTransaction)){
-            return "No account found for username: " + username;
-        }
-
-        //Step 2: Get last 5 transactions
+        //Get last 5 transactions
         List<UserTransaction> recentTransList = userTransactionRepository.findTop5ByUsernameOrderByTransactionDateDesc(username);
 
-        //Step 3: Build structured context
+        //Build structured context
         StringBuilder context = new StringBuilder();
         context.append("User: ").append(username).append("\n");
-        context.append("Current Balance: ").append(userTransaction.getBalance()).append("\n");
         context.append("Recent Transactions:\n");
 
         for (UserTransaction tran : recentTransList){
@@ -63,7 +56,7 @@ public class AiService {
                     .append("\n");
         }
 
-        //Step 4: Prompt Engineering
+        //Prompt Engineering
         String prompt = """
                 You are a banking assistant.
                 Use ONLY the data provided below.
@@ -75,7 +68,7 @@ public class AiService {
                 %s
                 """.formatted(context.toString(), question);
 
-        //Step 5: Call AI
+        //Call AI
         return chatClient.prompt()
                 .user(prompt)
                 .call()
