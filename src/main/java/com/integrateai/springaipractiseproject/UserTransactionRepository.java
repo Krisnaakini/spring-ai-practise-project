@@ -8,6 +8,8 @@ import java.util.List;
 
 @Repository
 public interface UserTransactionRepository extends JpaRepository<UserTransaction, Integer> {
+    List<UserTransaction> findByUsername(String username);
+
     UserTransaction findTopByUsernameOrderByTransactionDateDesc(String username);
 
     List<UserTransaction> findTop5ByUsernameOrderByTransactionDateDesc(String username);
