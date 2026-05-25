@@ -41,7 +41,7 @@ public class AiController {
         return jwtUtility.generateToken(request.getUsername());
     }
 
-    @PostMapping("register")
+    @PostMapping("auth/register")
     public AppUser register(@RequestBody LoginRequest request){
         return aiService.registerUser(request);
     }
