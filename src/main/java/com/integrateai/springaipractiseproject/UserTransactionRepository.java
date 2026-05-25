@@ -5,7 +5,6 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-
 @Repository
 public interface UserTransactionRepository extends JpaRepository<UserTransaction, Integer> {
     List<UserTransaction> findByUsername(String username);

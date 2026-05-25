@@ -3,6 +3,7 @@ package com.integrateai.springaipractiseproject;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -14,10 +15,12 @@ public class AiService {
 
     private final ChatClient chatClient;
     private final UserTransactionRepository userTransactionRepository;
+    private final AppUserRepository appUserRepository;
 
-    public AiService(ChatClient.Builder chatClientBuilder, UserTransactionRepository userTransactionRepository){
+    public AiService(ChatClient.Builder chatClientBuilder, UserTransactionRepository userTransactionRepository, AppUserRepository appUserRepository){
         this.chatClient = chatClientBuilder.build();
         this.userTransactionRepository = userTransactionRepository;
+        this.appUserRepository = appUserRepository;
     }
 
     public String generateAiResponse(String userPrompt){
@@ -95,5 +98,18 @@ public class AiService {
                 + question + "Highest spending category is " + highestCategory;
 
         return generateAiResponse(context);
+    }
+
+    public UserTransaction createTransaction(UserTransaction request, String username) {
+        request.setUsername(username);
+        request.setTransactionDate(LocalDateTime.now());
+        return userTransactionRepository.save(request);
+    }
+
+    public AppUser registerUser(LoginRequest request) {
+        AppUser appUser = new AppUser();
+        appUser.setUsername(request.getUsername());
+        appUser.setPassword(request.getPassword());
+        return appUserRepository.save(appUser);
     }
 }
